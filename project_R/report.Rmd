@@ -1,0 +1,146 @@
+---
+title: "Homework Data Viz"
+author: "Thongpan Win"
+date: "2023-05-06"
+output: html_document
+---
+
+# Hello World
+This is markdown language. Today we learn a few topics in R.
+
+- databases
+- working with date
+- ggplots
+- rmarkdown
+
+## Homework
+
+Explore dataframe 'diamond' and create 5 visualizations.
+
+### Chart 1 Range of cut and clarity
+```{r message=FALSE, warning=FALSE}
+library(tidyverse)
+library(patchwork)
+library(ggplot2)
+head(diamonds)
+```
+
+Range of carat
+```{r}
+min(diamonds$carat)
+max(diamonds$carat)
+carat_h <- diamonds$carat
+  h <- hist(carat_h,
+  main="Distribution of carat in data set",
+  sub="We found a high number of diamonds size from 0-1.5 carats",
+  xlab="Carat",
+  col="blue",
+  xlim=c(0,5.01),
+  )
+text(h$mids,h$counts,labels=h$counts, adj=c(0.5, -0.5), cex=0.6, col ="red")
+print(h)
+```
+
+We divided diamonds in to two groups (0-1.5 and 1.51-5.01)
+```{r}
+library(patchwork)
+library(ggplot2)
+set.seed(1234)
+all <-ggplot(diamonds %>% sample_n(5000), aes(x=carat))+
+  geom_histogram(bins=5)
+
+# Filter carat range between 0.2 to 1.5 carat
+c1 <-filter(diamonds, between(carat, 0.2,1.5))
+set.seed(1234)
+ggplot(c1 %>% sample_n(5000), aes(x=carat))+
+  geom_histogram(bins=5)
+# Filter carat range between 1.51 to 5.01 carat
+c2 <-filter(diamonds, between(carat, 1.51,5))
+set.seed(1234)
+ggplot(c2 %>% sample_n(5000), aes(x=carat))+
+  geom_histogram(bins=5)
+
+```
+
+Relationship between carat and price.
+```{r}
+#all
+set.seed(1234)
+ggplot(diamonds %>% sample_n(5000), mapping=aes(carat, price, col=cut))+
+  geom_boxplot(size=1, alpha=0.5) + 
+  theme_minimal()+
+  labs(
+    title = "Relationship between carat and price",
+    x = "Carat ranged 0.2-5 ",
+    y = "Price USD",
+    subtitle = "We found a positive relationship",
+    caption = "Datasource: diamonds ggplot2"
+  )
+
+##c1
+ggplot(c1 %>% sample_n(5000), mapping=aes(carat, price, col=cut))+
+  geom_boxplot(size=1, alpha=0.5) + 
+  theme_minimal()+
+  labs(
+    title = "Relationship between carat and price",
+    x = "Carat ranged 0.2-1.5 ",
+    y = "Price USD",
+    subtitle = "We found a positive relationship",
+    caption = "Datasource: diamonds ggplot2"
+  )
+set.seed(1234)
+ggplot(c2 %>% sample_n(5000), mapping=aes(carat, price, col=cut))+
+  geom_boxplot(size=1, alpha=0.5) + 
+  theme_minimal()+
+  labs(
+    title = "Relationship between carat and price",
+    x = "Carat ranged 1.51-5.01 ",
+    y = "Price USD",
+    subtitle = "Most Ideal cut were between 1.51 to 5.01 carats",
+    caption = "Datasource: diamonds ggplot2"
+  )
+```
+
+### Chart 3 Relationship between carat and color for each clarity
+```{r}
+ggplot(c1 %>% sample_n(5000), 
+       mapping=aes(color, carat, color=cut))+
+  geom_point(size=1, alpha=0.5)+ 
+  facet_wrap(~ clarity)+
+  theme_minimal()+
+  labs(
+    title = "Relationship between carat(ranged 0.2 to 1.5) and color",
+    x = "color",
+    y = "carat",
+    subtitle = "We found a positive relationship",
+    caption = "Datasource: diamonds ggplot2"
+  )
+```
+
+### Chart 4 Relationship between carat (0.2-1.5 carat), price, and cut for each clarity.
+```{r}
+ggplot(c1,
+       mapping=aes(carat, price))+
+  geom_point(size=0.5, alpha=0.2)+ 
+  facet_grid(clarity ~ cut)+
+  theme_minimal()+
+  labs(
+    title = "Relationship between carat(ranged 0.2 to 1.5) and price",
+    x = "carat",
+    y = "price",
+    subtitle = "We found a positive relationship",
+    caption = "Datasource: diamonds ggplot2"
+  )
+```
+
+
+
+Comment what did we found?
+We found a positive relationship between two variables.
+
+[google](https://www.google.com)
+![add new image](plus.unsplash.com)
+
+
+
+
